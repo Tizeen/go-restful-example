@@ -1,18 +1,33 @@
 package main
 
 import (
+	"github.com/Tizeen/go-restful-example/config"
 	"github.com/Tizeen/go-restful-example/router"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"time"
 )
 
+var (
+	cfg = pflag.StringP("config", "c", "", "apiserver config file path.")
+)
+
 func main() {
+	pflag.Parse()
+
+	if err := config.Init(*cfg); err != nil {
+		panic(err)
+	}
 
 	// 创建一个不包含任何中间件的router
 	g := gin.New()
+
+	// 设置gin的运行模式
+	gin.SetMode(viper.GetString("runmode"))
 
 	// 定义一个空的gin.HandlerFunc切片
 	middlewares := []gin.HandlerFunc{}
@@ -32,13 +47,13 @@ func main() {
 		log.Print("The router has been deployed successfully.")
 	}()
 
-	log.Printf("Start to listening the incoming requests on http address: %s", ":9999")
-	log.Printf(http.ListenAndServe(":9999", g).Error())
+	log.Printf("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
+	log.Printf(http.ListenAndServe(viper.GetString("addr"), g).Error())
 }
 
 func pingServer() error {
-	for i := 0; i < 10; i++ {
-		resp, err := http.Get("http://127.0.0.1:9999" + "/sd/health")
+	for i := 0; i < viper.GetInt("max_ping_count"); i++ {
+		resp, err := http.Get(viper.GetString("url") + "/sd/health")
 		if err == nil && resp.StatusCode == 200 {
 			return nil
 		}

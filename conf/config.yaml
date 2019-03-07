@@ -1,0 +1,5 @@
+runmode: release
+addr: :9999
+name: apiserver
+url: http://127.0.0.1:9999
+max_ping_count: 10
