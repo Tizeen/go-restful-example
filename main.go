@@ -4,10 +4,10 @@ import (
 	"github.com/Tizeen/go-restful-example/config"
 	"github.com/Tizeen/go-restful-example/router"
 	"github.com/gin-gonic/gin"
+	"github.com/lexkong/log"
 	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"log"
 	"net/http"
 	"time"
 )
@@ -23,11 +23,16 @@ func main() {
 		panic(err)
 	}
 
-	// 创建一个不包含任何中间件的router
-	g := gin.New()
-
 	// 设置gin的运行模式
 	gin.SetMode(viper.GetString("runmode"))
+
+	//for {
+	//	log.Info("1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")
+	//	time.Sleep(100 * time.Millisecond)
+	//}
+
+	// 创建一个不包含任何中间件的router
+	g := gin.New()
 
 	// 定义一个空的gin.HandlerFunc切片
 	middlewares := []gin.HandlerFunc{}
@@ -44,11 +49,11 @@ func main() {
 		if err := pingServer(); err != nil {
 			log.Fatal("The router has no response, or it might took too long to start up.", err)
 		}
-		log.Print("The router has been deployed successfully.")
+		log.Info("The router has been deployed successfully.")
 	}()
 
-	log.Printf("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
-	log.Printf(http.ListenAndServe(viper.GetString("addr"), g).Error())
+	log.Infof("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
+	log.Info(http.ListenAndServe(viper.GetString("addr"), g).Error())
 }
 
 func pingServer() error {
@@ -58,7 +63,7 @@ func pingServer() error {
 			return nil
 		}
 
-		log.Print("Waiting for the router, retry in 1 second.")
+		log.Info("Waiting for the router, retry in 1 second.")
 		time.Sleep(time.Second)
 	}
 	return errors.New("Cannot connect to the router.")
