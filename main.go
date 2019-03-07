@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Tizeen/go-restful-example/config"
+	"github.com/Tizeen/go-restful-example/model"
 	"github.com/Tizeen/go-restful-example/router"
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
@@ -22,6 +23,9 @@ func main() {
 	if err := config.Init(*cfg); err != nil {
 		panic(err)
 	}
+
+	model.DB.Init()
+	defer model.DB.Close()
 
 	// 设置gin的运行模式
 	gin.SetMode(viper.GetString("runmode"))
