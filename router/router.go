@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/Tizeen/go-restful-example/handler/sd"
+	"github.com/Tizeen/go-restful-example/handler/user"
 	"github.com/Tizeen/go-restful-example/router/middleware"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -30,6 +31,11 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		svcd.GET("/disk", sd.DiskCheck)
 		svcd.GET("/cpu", sd.CPUCheck)
 		svcd.GET("/ram", sd.RAMCheck)
+	}
+
+	u := g.Group("/v1/user")
+	{
+		u.POST("", user.Create)
 	}
 
 	return g
