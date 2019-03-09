@@ -2,6 +2,7 @@ package errno
 
 import "fmt"
 
+// 错误类型
 type Errno struct {
 	Code    int
 	Message string
@@ -11,6 +12,7 @@ func (err Errno) Error() string {
 	return err.Message
 }
 
+// 代表一个错误
 type Err struct {
 	Code    int
 	Message string
