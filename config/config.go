@@ -21,6 +21,7 @@ func Init(cfg string) error {
 		return err
 	}
 
+	// 初始化日志
 	c.initLog()
 
 	c.watchConfig()
@@ -45,6 +46,7 @@ func (c *Config) initConfig() error {
 	replacer := strings.NewReplacer(".", "_")
 	viper.SetEnvKeyReplacer(replacer)
 
+	// 读取配置
 	if err := viper.ReadInConfig(); err != nil {
 		return err
 	}

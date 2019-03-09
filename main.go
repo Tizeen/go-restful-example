@@ -14,16 +14,20 @@ import (
 )
 
 var (
+	// 定义命令行参数，返回指针
 	cfg = pflag.StringP("config", "c", "", "apiserver config file path.")
 )
 
 func main() {
+	// 解析命令行参数
 	pflag.Parse()
 
+	// 初始化配置
 	if err := config.Init(*cfg); err != nil {
 		panic(err)
 	}
 
+	// 初始化数据库
 	model.DB.Init()
 	defer model.DB.Close()
 
@@ -41,6 +45,7 @@ func main() {
 	// 定义一个空的gin.HandlerFunc切片
 	middlewares := []gin.HandlerFunc{}
 
+	// 加载路由
 	router.Load(
 		g,
 
@@ -56,6 +61,7 @@ func main() {
 		log.Info("The router has been deployed successfully.")
 	}()
 
+	// 启动
 	log.Infof("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
 	log.Info(http.ListenAndServe(viper.GetString("addr"), g).Error())
 }
