@@ -1,8 +1,10 @@
 package model
 
 import (
+	"fmt"
 	"github.com/Tizeen/go-restful-example/pkg/auth"
-	validator "gopkg.in/go-playground/validator.v9"
+	"github.com/Tizeen/go-restful-example/pkg/constvar"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type UserModel struct {
@@ -33,4 +35,36 @@ func (u *UserModel) Encrypt() (err error) {
 func (u *UserModel) Validate() error {
 	validate := validator.New()
 	return validate.Struct(u)
+}
+
+func ListUser(username string, offset, limit int) ([]*UserModel, uint64, error) {
+	if limit == 0 {
+		limit = constvar.DefaultLimit
+	}
+
+	users := make([]*UserModel, 0)
+	var count uint64
+
+	where := fmt.Sprintf("username like '%%%s%%'", username)
+	if err := DB.Self.Model(&UserModel{}).Where(where).Count(&count).Error; err != nil {
+		return users, count, err
+	}
+
+	if err := DB.Self.Where(where).Offset(offset).Limit(limit).Order("id desc").Find(&users).Error; err != nil {
+		return users, count, err
+	}
+
+	return users, count, nil
+
+}
+
+func DeleteUser(id uint64) error {
+	user := UserModel{}
+	user.BaseModel.Id = id
+	return DB.Self.Delete(&user).Error
+}
+
+func (u *UserModel) Update() error {
+	return DB.Self.Model(u).Updates(UserModel{Username: u.Username, Password: u.Password}).Error
+	//return DB.Self.Save(&u).Error
 }
