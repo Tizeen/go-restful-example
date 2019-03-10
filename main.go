@@ -4,6 +4,7 @@ import (
 	"github.com/Tizeen/go-restful-example/config"
 	"github.com/Tizeen/go-restful-example/model"
 	"github.com/Tizeen/go-restful-example/router"
+	"github.com/Tizeen/go-restful-example/router/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/lexkong/log"
 	"github.com/pkg/errors"
@@ -42,15 +43,13 @@ func main() {
 	// 创建一个不包含任何中间件的router
 	g := gin.New()
 
-	// 定义一个空的gin.HandlerFunc切片
-	middlewares := []gin.HandlerFunc{}
-
 	// 加载路由
 	router.Load(
 		g,
 
 		// 将已有的切片传入可变参数
-		middlewares...,
+		middleware.Logging(),
+		middleware.RequestId(),
 	)
 
 	// 通过goroutine自检服务
