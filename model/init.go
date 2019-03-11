@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// 可能需要访问多个数据库，为了对多个数据库进行初始化和连接管理，定义Database结构体类型
 type Database struct {
 	Self   *gorm.DB
 	Docker *gorm.DB
@@ -22,6 +23,7 @@ func (db *Database) Init() {
 	}
 }
 
+// 连接数据库
 func openDB(username, password, addr, name string) *gorm.DB {
 	config := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=%t&loc=%s",
 		username,
@@ -41,12 +43,14 @@ func openDB(username, password, addr, name string) *gorm.DB {
 
 }
 
+// 设置一些数据库的参数
 func setupDB(db *gorm.DB) {
 	db.LogMode(viper.GetBool("gormlog"))
 	// 用于设置闲置的连接数.设置闲置的连接数则当开启的一个连接使用完成后可以放在池里等候下一次使用。
 	db.DB().SetMaxIdleConns(0)
 }
 
+// 关闭数据库
 func (db *Database) Close() {
 	DB.Self.Close()
 	DB.Docker.Close()

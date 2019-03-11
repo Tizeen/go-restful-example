@@ -15,6 +15,7 @@ func Create(c *gin.Context) {
 	log.Info("User Create function called.", lager.Data{"X-Request-Id": util.GetReqID(c)})
 	var r CreateRequest
 
+	// 如果请求没有数据，返回错误
 	if err := c.Bind(&r); err != nil {
 		SendResponse(c, errno.ErrBind, nil)
 		return
@@ -25,21 +26,25 @@ func Create(c *gin.Context) {
 		Password: r.Password,
 	}
 
+	// 验证请求的数据结构是否正确
 	if err := u.Validate(); err != nil {
 		SendResponse(c, errno.ErrValidation, nil)
 		return
 	}
 
+	// 加密密码数据
 	if err := u.Encrypt(); err != nil {
 		SendResponse(c, errno.ErrEncrypt, nil)
 		return
 	}
 
+	// 添加用户
 	if err := u.Create(); err != nil {
 		SendResponse(c, errno.ErrDatabase, nil)
 		return
 	}
 
+	// 添加到返回数据结构中的 data 字段
 	rsp := CreateResponse{
 		Username: r.Username,
 	}

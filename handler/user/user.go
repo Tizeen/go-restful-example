@@ -2,6 +2,7 @@ package user
 
 import "github.com/Tizeen/go-restful-example/model"
 
+// 请求发送的数据
 type CreateRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

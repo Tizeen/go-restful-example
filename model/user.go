@@ -27,11 +27,13 @@ func (u *UserModel) Create() error {
 	return DB.Self.Create(&u).Error
 }
 
+// 加密密码
 func (u *UserModel) Encrypt() (err error) {
 	u.Password, err = auth.Encrypt(u.Password)
 	return
 }
 
+// 验证数据结构是否正确
 func (u *UserModel) Validate() error {
 	validate := validator.New()
 	return validate.Struct(u)

@@ -19,6 +19,7 @@ type Err struct {
 	Err     error
 }
 
+// 新建定制的错误
 func New(errno *Errno, err error) *Err {
 	return &Err{Code: errno.Code, Message: errno.Message, Err: err}
 }
@@ -42,6 +43,7 @@ func IsErrUserNotFound(err error) bool {
 	return code == ErrUserNotFound.Code
 }
 
+// 解析定制的错误
 func DecodeErr(err error) (int, string) {
 	if err == nil {
 		return OK.Code, OK.Message
