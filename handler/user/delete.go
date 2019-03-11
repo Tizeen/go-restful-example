@@ -9,6 +9,7 @@ import (
 )
 
 func Delete(c *gin.Context) {
+	// 字符串转换成数字
 	userId, _ := strconv.Atoi(c.Param("id"))
 	if err := model.DeleteUser(uint64(userId)); err != nil {
 		SendResponse(c, errno.ErrDatabase, nil)

@@ -52,7 +52,7 @@ func main() {
 		middleware.RequestId(),
 	)
 
-	// 通过goroutine自检服务
+	// 通过goroutine自检服务是否成功启动
 	go func() {
 		if err := pingServer(); err != nil {
 			log.Fatal("The router has no response, or it might took too long to start up.", err)
@@ -60,7 +60,7 @@ func main() {
 		log.Info("The router has been deployed successfully.")
 	}()
 
-	// 启动
+	// 启动服务
 	log.Infof("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
 	log.Info(http.ListenAndServe(viper.GetString("addr"), g).Error())
 }

@@ -60,12 +60,14 @@ func ListUser(username string, offset, limit int) ([]*UserModel, uint64, error) 
 
 }
 
+// 删除用户
 func DeleteUser(id uint64) error {
 	user := UserModel{}
 	user.BaseModel.Id = id
 	return DB.Self.Delete(&user).Error
 }
 
+// 更新用户信息
 func (u *UserModel) Update() error {
 	return DB.Self.Model(u).Updates(UserModel{Username: u.Username, Password: u.Password}).Error
 	//return DB.Self.Save(&u).Error
