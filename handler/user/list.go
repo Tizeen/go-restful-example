@@ -10,6 +10,7 @@ import (
 func List(c *gin.Context) {
 	var r ListRequest
 
+	// 无法绑定GET请求中的数据
 	if err := c.Bind(&r); err != nil {
 		SendResponse(c, errno.ErrBind, nil)
 		return

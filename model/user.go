@@ -19,6 +19,7 @@ func (u *UserModel) TableName() string {
 
 func GetUser(username string) (*UserModel, error) {
 	u := &UserModel{}
+	// 获取第一个匹配的记录
 	d := DB.Self.Where("username = ?", username).First(&u)
 	return u, d.Error
 }
@@ -48,10 +49,12 @@ func ListUser(username string, offset, limit int) ([]*UserModel, uint64, error) 
 	var count uint64
 
 	where := fmt.Sprintf("username like '%%%s%%'", username)
+	//  SELECT count(*) FROM `tb_users`  WHERE `tb_users`.`deletedAt` IS NULL AND ((username like '%%'))
 	if err := DB.Self.Model(&UserModel{}).Where(where).Count(&count).Error; err != nil {
 		return users, count, err
 	}
 
+	// SELECT * FROM `tb_users`  WHERE `tb_users`.`deletedAt` IS NULL AND ((username like '%%')) ORDER BY id desc LIMIT 50 OFFSET 0
 	if err := DB.Self.Where(where).Offset(offset).Limit(limit).Order("id desc").Find(&users).Error; err != nil {
 		return users, count, err
 	}
